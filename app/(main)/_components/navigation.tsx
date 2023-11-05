@@ -18,14 +18,14 @@ import {
   useState,
 } from "react";
 import { useMediaQuery } from "usehooks-ts";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { call, cn } from "@/lib";
-import { UserItem } from "@/app/(main)/_components/items/user-item";
+import { UserItem } from "./items/user-item";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { MenuItem } from "@/app/(main)/_components/items/menu-item";
+import { MenuItem } from "./items/menu-item";
 import { toast } from "sonner";
-import { DocumentList } from "@/app/(main)/_components/document-list";
+import { DocumentList } from "./document-list";
 import {
   Popover,
   PopoverContent,
@@ -34,6 +34,7 @@ import {
 import { Trashbox } from "./trashbox";
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
+import { Navbar } from "@/app/(main)/_components/navbar";
 
 export const Navigation = () => {
   const onOpen = useSearch((s) => s.onOpen);
@@ -41,6 +42,7 @@ export const Navigation = () => {
   const createDoc = useMutation(api.documents.create);
   const mobile = useMediaQuery("(max-width: 768px)");
   const pathname = usePathname();
+  const { documentId } = useParams();
 
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
@@ -193,15 +195,19 @@ export const Navigation = () => {
           "left-0 w-full": mobile,
         })}
       >
-        <nav className="bg-transparent px-3 py-2 w-full">
-          {collapsed && (
-            <MenuIcon
-              className="h-6 w-6 text-muted-foreground"
-              onClick={resetWidth}
-              role="button"
-            />
-          )}
-        </nav>
+        {documentId ? (
+          <Navbar collapsed={collapsed} onWidthReset={resetWidth} />
+        ) : (
+          <nav className="bg-transparent px-3 py-2 w-full">
+            {collapsed && (
+              <MenuIcon
+                className="h-6 w-6 text-muted-foreground"
+                onClick={resetWidth}
+                role="button"
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );

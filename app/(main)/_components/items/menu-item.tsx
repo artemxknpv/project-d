@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 type MenuItemProps = {
   id?: Id<"documents">;
@@ -52,6 +53,7 @@ export const MenuItem = ({
   const create = useMutation(api.documents.create);
   const archive = useMutation(api.documents.archive);
   const { user } = useUser();
+  const router = useRouter();
 
   const Chevron = expanded ? ChevronDown : ChevronRight;
 
@@ -66,8 +68,9 @@ export const MenuItem = ({
     if (!id) return;
 
     toast.promise(
-      create({ title: "Untitled", parent: id }).then(() => {
+      create({ title: "Untitled", parent: id }).then((docId) => {
         if (!expanded) onExpand?.();
+        router.push(`/documents/${docId}`);
       }),
       {
         loading: "Creating a new note...",
