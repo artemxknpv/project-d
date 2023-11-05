@@ -11,6 +11,7 @@ import {
 import { useMediaQuery } from "usehooks-ts";
 import { usePathname } from "next/navigation";
 import { call, cn } from "@/lib";
+import { UserItem } from "@/app/(main)/_components/items/user-item";
 
 export const Navigation = () => {
   const mobile = useMediaQuery("(max-width: 768px)");
@@ -121,10 +122,8 @@ export const Navigation = () => {
         >
           <ChevronsLeft className="h-6 w-6" />
         </div>
-        <div>
-          <p>Action items</p>
-        </div>
-        <div>Documents</div>
+        <UserItem />
+        <div className="overflow-hidden text-clip">Documents</div>
         <div
           onMouseDown={handleMouseDown}
           onClick={resetWidth}
