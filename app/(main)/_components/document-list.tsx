@@ -58,8 +58,8 @@ export const DocumentList: FC<DocumentListProps> = ({
         style={{
           paddingLeft: level ? `${level * 12 + 25}px` : undefined,
         }}
-        className={cn("text-sm font-medium text-muted-foreground/80", {
-          "last:block": expanded,
+        className={cn("hidden text-sm font-medium text-muted-foreground/80", {
+          "last:block": expanded && level !== 0,
           hidden: level === 0,
         })}
       >

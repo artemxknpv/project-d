@@ -3,9 +3,11 @@
 import {
   ChevronsLeft,
   MenuIcon,
+  Plus,
   PlusCircle,
   Search,
   Settings,
+  Trash,
 } from "lucide-react";
 import {
   ElementRef,
@@ -23,8 +25,16 @@ import { api } from "@/convex/_generated/api";
 import { MenuItem } from "@/app/(main)/_components/items/menu-item";
 import { toast } from "sonner";
 import { DocumentList } from "@/app/(main)/_components/document-list";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Trashbox } from "./trashbox";
+import { useSearch } from "@/hooks/use-search";
 
 export const Navigation = () => {
+  const onOpen = useSearch((s) => s.onOpen);
   const createDoc = useMutation(api.documents.create);
   const mobile = useMediaQuery("(max-width: 768px)");
   const pathname = usePathname();
@@ -144,7 +154,7 @@ export const Navigation = () => {
         </div>
         <div>
           <UserItem />
-          <MenuItem label="Search" search icon={Search} />
+          <MenuItem label="Search" search icon={Search} onClick={onOpen} />
           <MenuItem label="Settings" icon={Settings} />
           <MenuItem
             onClick={handleCreateDoc}
@@ -154,6 +164,18 @@ export const Navigation = () => {
         </div>
         <div className="mt-4">
           <DocumentList />
+          <MenuItem label="Add a page" icon={Plus} onClick={handleCreateDoc} />
+          <Popover>
+            <PopoverTrigger className="w-full mt-4">
+              <MenuItem label="Trash" icon={Trash} />
+            </PopoverTrigger>
+            <PopoverContent
+              className="p-0 w-72"
+              side={mobile ? "bottom" : "right"}
+            >
+              <Trashbox />
+            </PopoverContent>
+          </Popover>
         </div>
         <div
           onMouseDown={handleMouseDown}
