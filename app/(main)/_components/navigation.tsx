@@ -12,6 +12,7 @@ import {
 import {
   ElementRef,
   MouseEventHandler,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -32,9 +33,11 @@ import {
 } from "@/components/ui/popover";
 import { Trashbox } from "./trashbox";
 import { useSearch } from "@/hooks/use-search";
+import { useSettings } from "@/hooks/use-settings";
 
 export const Navigation = () => {
   const onOpen = useSearch((s) => s.onOpen);
+  const openSettings = useSettings((s) => s.onOpen);
   const createDoc = useMutation(api.documents.create);
   const mobile = useMediaQuery("(max-width: 768px)");
   const pathname = usePathname();
@@ -81,7 +84,7 @@ export const Navigation = () => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
-  const resetWidth = () => {
+  const resetWidth = useCallback(() => {
     if (!refsAssigned) return;
     setCollapsed(false);
     setResetting(true);
@@ -95,9 +98,9 @@ export const Navigation = () => {
     );
     navbarRef.current.style.setProperty("left", mobile ? "100%" : "240px");
     setTimeout(() => setResetting(false), 300);
-  };
+  }, [mobile, refsAssigned]);
 
-  const collapse = () => {
+  const collapse = useCallback(() => {
     if (!refsAssigned) return;
     setCollapsed(true);
     setResetting(true);
@@ -106,7 +109,7 @@ export const Navigation = () => {
     navbarRef.current.style.setProperty("width", "100%");
     navbarRef.current.style.setProperty("left", "0");
     setTimeout(() => setResetting(false), 300);
-  };
+  }, [refsAssigned]);
 
   useEffect(() => {
     if (mobile) {
@@ -114,13 +117,13 @@ export const Navigation = () => {
     } else {
       resetWidth();
     }
-  }, [mobile]);
+  }, [collapse, mobile, resetWidth]);
 
   useEffect(() => {
     if (mobile) {
       collapse();
     }
-  }, [pathname, mobile]);
+  }, [pathname, mobile, collapse]);
 
   const handleCreateDoc = () => {
     toast.promise(createDoc({ title: "Untitled" }), {
@@ -155,7 +158,7 @@ export const Navigation = () => {
         <div>
           <UserItem />
           <MenuItem label="Search" search icon={Search} onClick={onOpen} />
-          <MenuItem label="Settings" icon={Settings} />
+          <MenuItem label="Settings" icon={Settings} onClick={openSettings} />
           <MenuItem
             onClick={handleCreateDoc}
             label="New page"

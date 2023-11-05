@@ -103,7 +103,7 @@ export const MenuItem = ({
         <div
           onClick={handleExpand}
           role="button"
-          className="h-full rounde-sm hover:bg-neutral-300 dark:bg-neutral-600"
+          className="h-full rounde-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
         >
           <Chevron className="h-4 w-4 shrink-0 text-muted-foreground/50" />
         </div>
