@@ -12,8 +12,11 @@ import { useMediaQuery } from "usehooks-ts";
 import { usePathname } from "next/navigation";
 import { call, cn } from "@/lib";
 import { UserItem } from "@/app/(main)/_components/items/user-item";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export const Navigation = () => {
+  const documents = useQuery(api.documents.get);
   const mobile = useMediaQuery("(max-width: 768px)");
   const pathname = usePathname();
 
@@ -123,7 +126,9 @@ export const Navigation = () => {
           <ChevronsLeft className="h-6 w-6" />
         </div>
         <UserItem />
-        <div className="overflow-hidden text-clip">Documents</div>
+        <div className="overflow-hidden text-clip">
+          {documents?.map((doc) => <p key={doc._id}>{doc.title}</p>)}
+        </div>
         <div
           onMouseDown={handleMouseDown}
           onClick={resetWidth}
