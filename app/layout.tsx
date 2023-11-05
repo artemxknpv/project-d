@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type { FC, PropsWithChildren } from "react";
 import { AuthProvider } from "@/components/providers/auth-provider";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic", "cyrillic-ext"],
@@ -17,6 +18,7 @@ const RootLayout: FC<PropsWithChildren> = ({ children }) => {
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Toaster position="bottom-right" />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
