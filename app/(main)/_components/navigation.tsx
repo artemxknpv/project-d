@@ -1,6 +1,12 @@
 "use client";
 
-import { ChevronsLeft, MenuIcon } from "lucide-react";
+import {
+  ChevronsLeft,
+  MenuIcon,
+  PlusCircle,
+  Search,
+  Settings,
+} from "lucide-react";
 import {
   ElementRef,
   MouseEventHandler,
@@ -12,11 +18,14 @@ import { useMediaQuery } from "usehooks-ts";
 import { usePathname } from "next/navigation";
 import { call, cn } from "@/lib";
 import { UserItem } from "@/app/(main)/_components/items/user-item";
-import { useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { MenuItem } from "@/app/(main)/_components/items/menu-item";
+import { toast } from "sonner";
+import { DocumentList } from "@/app/(main)/_components/document-list";
 
 export const Navigation = () => {
-  const documents = useQuery(api.documents.get);
+  const createDoc = useMutation(api.documents.create);
   const mobile = useMediaQuery("(max-width: 768px)");
   const pathname = usePathname();
 
@@ -103,6 +112,14 @@ export const Navigation = () => {
     }
   }, [pathname, mobile]);
 
+  const handleCreateDoc = () => {
+    toast.promise(createDoc({ title: "Untitled" }), {
+      loading: "Creating a new note...",
+      success: "New note created!",
+      error: "Note was note created",
+    });
+  };
+
   return (
     <>
       <aside
@@ -125,9 +142,18 @@ export const Navigation = () => {
         >
           <ChevronsLeft className="h-6 w-6" />
         </div>
-        <UserItem />
-        <div className="overflow-hidden text-clip">
-          {documents?.map((doc) => <p key={doc._id}>{doc.title}</p>)}
+        <div>
+          <UserItem />
+          <MenuItem label="Search" search icon={Search} />
+          <MenuItem label="Settings" icon={Settings} />
+          <MenuItem
+            onClick={handleCreateDoc}
+            label="New page"
+            icon={PlusCircle}
+          />
+        </div>
+        <div className="mt-4">
+          <DocumentList />
         </div>
         <div
           onMouseDown={handleMouseDown}
